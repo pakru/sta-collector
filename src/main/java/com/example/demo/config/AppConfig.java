@@ -9,21 +9,14 @@ import org.springframework.data.cassandra.config.java.AbstractCassandraConfigura
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
-@PropertySource(value = { "classpath:application.properties" })
+@PropertySource({ "classpath:application.properties", "file:${app.home.path}/app.properties" })
 @EnableCassandraRepositories(basePackages = "com.example.demo.repo")
 public class AppConfig extends AbstractCassandraConfiguration {
-    /**
-     * Constant String for Keyspace
-     */
+
     public static final String KEYSPACE = "cassandra.keyspace";
-    /**
-     * Constant String for ContactPoints
-     */
     public static final String CONTACTPOINTS = "cassandra.contactpoints";
-    /**
-     * Constant String for Port
-     */
     private static final String PORT = "cassandra.port";
+    public static final String SPARKHOST = "spark.host";
 
     @Autowired
     private Environment environment;

@@ -20,7 +20,6 @@ import java.util.*;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.column;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapColumnTo;
 import static com.datastax.spark.connector.japi.CassandraJavaUtil.mapRowTo;
-import static java.util.stream.Collectors.toList;
 
 @RestController
 public class RestApi {
@@ -95,15 +94,15 @@ public class RestApi {
         resultStat.append(" --- STAT --- \n Total Entries in table: " + totalEntries +
                 "\n Total unic AP MAC: " + apCount +
                 "\n Total unic STA MAC: " + staCount +
-                "\n   2.4G: " + staCount + "; Avg RSSI: " + avg2G +
-                "\n   5G: "   + staCount + "; Avg RSSI: " + avg5G);
+                "\n    2.4G: " + sta2GCount + "; Avg RSSI: " + avg2G +
+                "\n    5G: "   + sta5GCount + "; Avg RSSI: " + avg5G);
 
         return resultStat.toString();
     }
 
 
     @RequestMapping("/getApUsage")
-    private Map<String, Set<String>> getApUsage(){
+    private Map<String, Set<String>> getApUsage(@RequestParam(name = "apmac", defaultValue = "") String apMac){
 
         JavaRDD<StaData> dataStaRDD = CassandraJavaUtil.javaFunctions(sc)
                 .cassandraTable(environment.getProperty(AppConfig.KEYSPACE), "stadata", mapRowTo(StaData.class))
@@ -132,13 +131,18 @@ public class RestApi {
                     res.addAll(val2);
                     return res;}); // merge combiner
 
-        Map<String, Set<String>> apResultMap = apResultRDD.collectAsMap();
+        Map<String, Set<String>> apResultMap;
+        if (apMac.isEmpty())
+            apResultMap = apResultRDD.collectAsMap();
+        else {
+            apResultMap = apResultRDD.filter(t -> t._1.equals(apMac)).collectAsMap();
+        }
 
         return apResultMap;
     }
 
     @RequestMapping("/getStaUsage")
-    private Map<String, Set<String>> getStaUsage(){
+    private Map<String, Set<String>> getStaUsage(@RequestParam(name = "stamac", defaultValue = "") String staMac){
         JavaRDD<StaData> dataStaRDD = CassandraJavaUtil.javaFunctions(sc)
                 .cassandraTable(environment.getProperty(AppConfig.KEYSPACE), "stadata", mapRowTo(StaData.class))
                 .select(column("id"),
@@ -166,8 +170,13 @@ public class RestApi {
                     res.addAll(val2);
                     return res;}); // merge combiner
 
-        Map<String, Set<String>> apResultMap = apResultRDD.collectAsMap();
+        Map<String, Set<String>> apResultMap;
 
+        if (staMac.isEmpty())
+            apResultMap = apResultRDD.collectAsMap();
+        else {
+            apResultMap = apResultRDD.filter(t -> t._1.equals(staMac)).collectAsMap();
+        }
         return apResultMap;
     }
 

@@ -23,6 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <dse.version>5.1.7</dse.version>
+        <project-name>eltex-macs</project-name>
 	</properties>
 
 	<dependencies>
@@ -93,6 +94,71 @@
                     </execution>
                 </executions>
 			</plugin>
+
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.5</version>
+                <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>jdeb</goal>
+                    </goals>
+                    <configuration>
+                        <controlDir>${project.build.directory}/deb/control</controlDir>
+                        <deb>${project.build.directory}/${project-name}_all.deb</deb>
+                        <changesOut>${project.build.directory}/${project.artifact}.changes</changesOut>
+                        <dataSet>
+<!--                            <data>
+                                <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                <type>file</type>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/usr/share/${project-name}</prefix>
+                                </mapper>
+                            </data>-->
+<!--                            <data>
+                                <src>${project.build.directory}/lib</src>
+                                <type>directory</type>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/usr/share/${project-name}/lib</prefix>
+                                </mapper>
+                            </data>-->
+                            <data>
+                                <src>${project.build.directory}/deb/etc</src>
+                                <type>directory</type>
+                                <excludes>init.d/*</excludes>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/etc</prefix>
+                                </mapper>
+                            </data>
+                            <!-- /etc/init.d scripts must be executable -->
+                            <data>
+                                <src>${project.build.directory}/deb/etc/init.d</src>
+                                <type>directory</type>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/etc/init.d</prefix>
+                                    <filemode>755</filemode>
+                                </mapper>
+                            </data>
+                            <data>
+                                <src>${project.basedir}/src/main/webapp</src>
+                                <type>directory</type>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/usr/share/${project-name}/web</prefix>
+                                </mapper>
+                            </data>
+                        </dataSet>
+                    </configuration>
+                </execution>
+                </executions>
+            </plugin>
+
 		</plugins>
 	</build>
 
