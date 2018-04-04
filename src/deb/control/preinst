@@ -1,0 +1,23 @@
+#!/bin/sh
+# preinst script for Eltex.Portal
+
+# немедленный выход, если выходное состояние команды ненулевое.
+set -e
+
+case "$1" in
+    install)
+        echo "Prepare to install packet @project-name@"
+    ;;
+    upgrade)
+        echo "Prepare to $1 packet @project-name@"
+    ;;
+    abort-upgrade)
+        echo "Abort upgrade @project-name@"
+    ;;
+    *)
+        echo "preinst: preinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

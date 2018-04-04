@@ -1,0 +1,9 @@
+Package: @project-name@
+Version: @softwlc.version@-@buildNumber@
+Architecture: all
+Maintainer: Victor Abarenov <victor.abarenov@eltex.nsk.ru>
+Depends: bash, procps
+Section: unknown
+Priority: extra
+Homepage: http://eltex.nsk.ru
+Description: @name@ web service

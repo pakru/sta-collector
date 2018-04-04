@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#  The postrm script may be called in the following ways:
+
+#    postrm remove
+#    postrm purge
+#    old-postrm upgrade new-version
+#    disappearer's-postrm disappear overwriter overwriter-version
+
+#  The postrm script is called after the package's files have been removed or replaced.
+# The package whose postrm is being called may have previously been deconfigured and only be "Unpacked",
+# at which point subsequent package changes do not consider its dependencies. Therefore, all postrm actions may
+# only rely on essential packages and must gracefully skip any actions that require the package's dependencies
+# if those dependencies are unavailable.[48]
+
+#    new-postrm failed-upgrade old-version
+
+#  Called when the old postrm upgrade action fails. The new package will be unpacked, but only essential packages
+# and pre-dependencies can be relied on. Pre-dependencies will either be configured or will be "Unpacked" or
+# "Half-Configured" but previously had been configured and was never removed.
+
+#    new-postrm abort-install
+#    new-postrm abort-install old-version
+#    new-postrm abort-upgrade old-version
+
+#  Called before unpacking the new package as part of the error handling of preinst failures. May assume the same state as preinst can assume.
+
+# немедленный выход, если выходное состояние команды ненулевое.
+set -e
+
+LOG_DIR="/var/log/@project-name@"
+WAR_EXPLODED_DIR=/usr/lib/@project-name@
+USER="maccollector"
+
+case "$1" in
+    remove|purge)
+        while pgrep -u $USER > /dev/null ; do
+            pkill -u $USER || true
+            sleep 0.5
+        done
+
+        if [ -d $WAR_EXPLODED_DIR ]; then
+            echo "Removing extracted web application"
+            rm -rf $WAR_EXPLODED_DIR
+        fi
+
+        echo "Removing user"
+        deluser --system $USER
+
+        echo "Cleaning log dir..."
+        rm -rf $LOG_DIR
+
+        update-rc.d @project-name@ remove > /dev/null
+    ;;
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

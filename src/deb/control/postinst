@@ -1,0 +1,64 @@
+#!/bin/sh
+# postinst script for Eltex.Portal
+#
+# see: dh_installdeb(1)
+
+set -e #немедленный выход, если выходное состояние команды ненулевое.
+
+LOG_DIR=/var/log/@project-name@
+CONF_DIR=/etc/@project-name@
+USER="maccollector"
+CONFIG=/etc/eltex-apb/macs.properties
+
+set_param() {
+    local conf_file="$1"
+    local key="$2"
+    local value="$3"
+
+    if grep "$key" "$conf_file" > /dev/null ; then
+        local script="
+            /^\s*#?\s*$key=/ {
+                print \"$key=$value\"
+                next
+            }
+
+            { print }
+        "
+        awk "$script" "$conf_file" > "${conf_file}_new"
+        cat "${conf_file}_new" > "$conf_file"
+        rm "${conf_file}_new"
+    else
+        echo "$key=$value" >> "$conf_file"
+    fi
+}
+
+case "$1" in
+    configure)
+        # $2 - previous package version (upgrade only)
+
+        if [ "$ANSWER_AUTH_SERVICE_ADMIN_USER" ]; then
+            set_param "$CONFIG" "nbi.client.login" "$ANSWER_AUTH_SERVICE_ADMIN_USER"
+        fi
+
+        if [ "$ANSWER_AUTH_SERVICE_ADMIN_PASSWORD" ]; then
+            set_param "$CONFIG" "nbi.client.password" "$ANSWER_AUTH_SERVICE_ADMIN_PASSWORD"
+        fi
+
+        adduser --system --no-create-home $USER
+        mkdir -p $LOG_DIR
+        chown $USER -R $LOG_DIR
+        chown $USER -R $CONF_DIR
+
+        update-rc.d @project-name@ defaults > /dev/null
+
+        service @project-name@ start
+    ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+    *)
+        echo "postinst: postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

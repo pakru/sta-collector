@@ -9,7 +9,7 @@ import org.springframework.data.cassandra.config.java.AbstractCassandraConfigura
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
-@PropertySource({ "classpath:application.properties", "file:${app.home.path}/app.properties" })
+@PropertySource({ "classpath:application.properties"})
 @EnableCassandraRepositories(basePackages = "com.example.demo.repo")
 public class AppConfig extends AbstractCassandraConfiguration {
 

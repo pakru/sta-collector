@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.test.spark.spring</groupId>
-	<artifactId>spring-spark2</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<artifactId>eltex-macs</artifactId>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>spring-spark2</name>
-	<description>Demo project for Spring Boot</description>
+	<name>eltex-macs</name>
+	<description>Eltex MAC addresses collection</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -24,7 +24,15 @@
 		<java.version>1.8</java.version>
         <dse.version>5.1.7</dse.version>
         <project-name>eltex-macs</project-name>
+        <softwlc.version>1.10</softwlc.version>
 	</properties>
+
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/dummy</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/dummy</url>
+    </scm>
 
 	<dependencies>
 		<dependency>
@@ -79,6 +87,7 @@
 	</dependencies>
 
 	<build>
+        <finalName>eltex-macs</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -96,9 +105,53 @@
 			</plugin>
 
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/deb</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/deb</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <revisionOnScmFailure>true</revisionOnScmFailure>
+                    <format>{0,number,#}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
-                <version>1.5</version>
+                <version>1.3</version>
                 <executions>
                 <execution>
                     <phase>package</phase>
@@ -107,25 +160,34 @@
                     </goals>
                     <configuration>
                         <controlDir>${project.build.directory}/deb/control</controlDir>
-                        <deb>${project.build.directory}/${project-name}_all.deb</deb>
+                        <deb>${project.build.directory}/${project-name}-${buildNumber}_all.deb</deb>
                         <changesOut>${project.build.directory}/${project.artifact}.changes</changesOut>
                         <dataSet>
-<!--                            <data>
+                            <data>
                                 <src>${project.build.directory}/${project.build.finalName}.jar</src>
                                 <type>file</type>
                                 <mapper>
                                     <type>perm</type>
                                     <prefix>/usr/share/${project-name}</prefix>
                                 </mapper>
-                            </data>-->
-<!--                            <data>
-                                <src>${project.build.directory}/lib</src>
-                                <type>directory</type>
+                            </data>
+                            <data>
+                                <src>${project.build.directory}/${project.build.finalName}-exec.jar</src>
+                                <type>file</type>
                                 <mapper>
                                     <type>perm</type>
-                                    <prefix>/usr/share/${project-name}/lib</prefix>
+                                    <prefix>/usr/share/${project-name}</prefix>
                                 </mapper>
-                            </data>-->
+                            </data>
+
+                            <!--                            <data>
+                                                            <src>${project.build.directory}/lib</src>
+                                                            <type>directory</type>
+                                                            <mapper>
+                                                                <type>perm</type>
+                                                                <prefix>/usr/share/${project-name}/lib</prefix>
+                                                            </mapper>
+                                                        </data>-->
                             <data>
                                 <src>${project.build.directory}/deb/etc</src>
                                 <type>directory</type>
@@ -145,14 +207,14 @@
                                     <filemode>755</filemode>
                                 </mapper>
                             </data>
-                            <data>
+<!--                            <data>
                                 <src>${project.basedir}/src/main/webapp</src>
                                 <type>directory</type>
                                 <mapper>
                                     <type>perm</type>
                                     <prefix>/usr/share/${project-name}/web</prefix>
                                 </mapper>
-                            </data>
+                            </data>-->
                         </dataSet>
                     </configuration>
                 </execution>
