@@ -1,6 +1,7 @@
 Package: @project-name@
 Version: @softwlc.version@-@buildNumber@
 Architecture: all
+Build-Depends: cassandra (>= 3.11.2)
 Maintainer: Victor Abarenov <victor.abarenov@eltex.nsk.ru>
 Depends: bash, procps
 Section: unknown

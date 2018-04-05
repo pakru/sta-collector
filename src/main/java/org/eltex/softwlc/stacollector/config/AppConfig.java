@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package org.eltex.softwlc.stacollector.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.data.cassandra.config.java.AbstractCassandraConfigura
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
-@PropertySource({ "classpath:application.properties"})
-@EnableCassandraRepositories(basePackages = "com.example.demo.repo")
+@PropertySource({/* "classpath:application.properties", */ "file:${app.config.path}/macs.properties" })
+@EnableCassandraRepositories(basePackages = "org.eltex.softwlc.stacollector.repo")
 public class AppConfig extends AbstractCassandraConfiguration {
 
     public static final String KEYSPACE = "cassandra.keyspace";
@@ -38,7 +38,7 @@ public class AppConfig extends AbstractCassandraConfiguration {
 
     @Override
     public String[] getEntityBasePackages() {
-        return new String[] { "com.example.demo.entity" };
+        return new String[] { "org.eltex.softwlc.stacollector.entity" };
     }
 
 }

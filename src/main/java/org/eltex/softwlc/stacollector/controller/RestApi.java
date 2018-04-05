@@ -1,9 +1,10 @@
-package com.example.demo.controller;
+package org.eltex.softwlc.stacollector.controller;
+
+import org.eltex.softwlc.stacollector.config.AppConfig;
+import org.eltex.softwlc.stacollector.entity.StaData;
+import org.eltex.softwlc.stacollector.repo.StaDataRepo;
 
 import com.datastax.spark.connector.japi.CassandraJavaUtil;
-import com.example.demo.config.AppConfig;
-import com.example.demo.entity.StaData;
-import com.example.demo.repo.StaDataRepo;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -56,6 +57,7 @@ public class RestApi {
         return "Exception: " + ex.toString();
     }
 
+    // TODO!  Выбрасывает exception при пустой базе
     @RequestMapping("/getStat")
     private String getAvg() {
         JavaRDD<Long> dataRssiStaRDD = CassandraJavaUtil.javaFunctions(sc)

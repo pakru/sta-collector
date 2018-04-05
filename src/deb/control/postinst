@@ -7,8 +7,8 @@ set -e #немедленный выход, если выходное состо�
 
 LOG_DIR=/var/log/@project-name@
 CONF_DIR=/etc/@project-name@
-USER="maccollector"
-CONFIG=/etc/eltex-apb/macs.properties
+USER="stacollector"
+CONFIG=/etc/eltex-sta-collector/macs.properties
 
 set_param() {
     local conf_file="$1"
@@ -50,6 +50,8 @@ case "$1" in
         chown $USER -R $CONF_DIR
 
         update-rc.d @project-name@ defaults > /dev/null
+
+        cqlsh -e "CREATE KEYSPACE IF NOT EXISTS stakeyspace WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};"
 
         service @project-name@ start
     ;;

@@ -1,7 +1,8 @@
-package com.example.demo.wshandler;
+package org.eltex.softwlc.stacollector.wshandler;
 
-import com.example.demo.entity.StaData;
-import com.example.demo.repo.StaDataRepo;
+import org.eltex.softwlc.stacollector.entity.StaData;
+import org.eltex.softwlc.stacollector.repo.StaDataRepo;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

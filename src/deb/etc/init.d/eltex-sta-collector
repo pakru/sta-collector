@@ -18,7 +18,7 @@ NAME=@project-name@
 PORT=8092
 ACCEPT_QUEUE_SIZE=0
 JAVA=/usr/bin/java
-JAVA_INIT_HEAP=128m
+JAVA_INIT_HEAP=64m
 JAVA_MAX_HEAP=2048m
 MAX_TEXT_MESSAGE_BUFFER_SIZE=262144
 
@@ -27,15 +27,15 @@ if [ -f /etc/default/$NAME ]; then
 fi
 
 HOME="/usr/share/$NAME"
-JAR_FILE="eltex-macs-exec.jar"
+JAR_FILE="eltex-sta-collector-exec.jar"
 #JVM_OPTS="$JAVA_OPTS -Xms$JAVA_INIT_HEAP -Xmx$JAVA_MAX_HEAP -Dlog4j.configurationFile=file:/etc/$NAME/log4j2.xml -Dorg.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog"
 JVM_OPTS="$JAVA_OPTS -Xms$JAVA_INIT_HEAP -Xmx$JAVA_MAX_HEAP"
 JAVA_ARGS="$JVM_OPTS -jar $JAR_FILE"
 PIDFILE="/var/run/$NAME.pid"
-USER="maccollector"
+USER="stacollector"
 
 if [ ! -e "$JAVA" ]; then
-    >&2 echo "Java not found. Please install JRE or JDK"
+    >&2 echo "Java home not found. Please install JRE or JDK"
     exit 1
 fi
 
@@ -56,9 +56,15 @@ start() {
             ;;
     esac
 
-    sleep 2
+    TIMER=10
+    #sleep 10
+    for i in $(seq 0 $TIMER); do
+        sleep 1
+        echo -n ".."
+    done
 
-    RET_COUNT=10
+
+    RET_COUNT=3
     RET=-1
     for i in $(seq 0 $RET_COUNT); do
         if start-stop-daemon --status -p $PIDFILE > /dev/null ; then
@@ -72,7 +78,6 @@ start() {
 
     done
     unset i
-#    log_end_msg 1
 
     echo "Service $NAME is not started! Look at error.log"
     exit 2

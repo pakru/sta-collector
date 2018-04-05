@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.test.spark.spring</groupId>
-	<artifactId>eltex-macs</artifactId>
+	<groupId>org.eltex.softwlc</groupId>
+	<artifactId>stacollector</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>eltex-macs</name>
-	<description>Eltex MAC addresses collection</description>
+	<!--<name>eltex-sta-collector</name>-->
+	<description>Eltex STA MAC addresses collector</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <dse.version>5.1.7</dse.version>
-        <project-name>eltex-macs</project-name>
+        <project-name>eltex-sta-collector</project-name>
         <softwlc.version>1.10</softwlc.version>
 	</properties>
 
@@ -87,7 +87,7 @@
 	</dependencies>
 
 	<build>
-        <finalName>eltex-macs</finalName>
+        <finalName>eltex-sta-collector</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -160,7 +160,7 @@
                     </goals>
                     <configuration>
                         <controlDir>${project.build.directory}/deb/control</controlDir>
-                        <deb>${project.build.directory}/${project-name}-${buildNumber}_all.deb</deb>
+                        <deb>${project.build.directory}/${project-name}-${softwlc.version}-${buildNumber}_all.deb</deb>
                         <changesOut>${project.build.directory}/${project.artifact}.changes</changesOut>
                         <dataSet>
                             <data>
@@ -179,15 +179,14 @@
                                     <prefix>/usr/share/${project-name}</prefix>
                                 </mapper>
                             </data>
-
-                            <!--                            <data>
-                                                            <src>${project.build.directory}/lib</src>
-                                                            <type>directory</type>
-                                                            <mapper>
-                                                                <type>perm</type>
-                                                                <prefix>/usr/share/${project-name}/lib</prefix>
-                                                            </mapper>
-                                                        </data>-->
+<!--                            <data>
+                                <src>${project.build.directory}/lib</src>
+                                <type>directory</type>
+                                <mapper>
+                                    <type>perm</type>
+                                    <prefix>/usr/share/${project-name}/lib</prefix>
+                                </mapper>
+                            </data>-->
                             <data>
                                 <src>${project.build.directory}/deb/etc</src>
                                 <type>directory</type>

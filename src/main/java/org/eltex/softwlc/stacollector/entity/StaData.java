@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package org.eltex.softwlc.stacollector.entity;
 
 import com.datastax.driver.core.DataType;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -16,6 +16,7 @@ public class StaData implements Serializable {
 
     @PrimaryKey
     @JsonIgnore
+    @CassandraType(type = DataType.Name.UUID)
     private UUID id;
 
     private String apDomain;

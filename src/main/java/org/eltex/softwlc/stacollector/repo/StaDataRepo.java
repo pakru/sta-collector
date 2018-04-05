@@ -1,6 +1,7 @@
-package com.example.demo.repo;
+package org.eltex.softwlc.stacollector.repo;
 
-import com.example.demo.entity.StaData;
+import org.eltex.softwlc.stacollector.entity.StaData;
+
 import org.springframework.data.cassandra.repository.CassandraRepository;
 //import org.springframework.stereotype.Repository;
 

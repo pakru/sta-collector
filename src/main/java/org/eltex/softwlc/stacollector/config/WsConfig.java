@@ -1,6 +1,7 @@
-package com.example.demo.config;
+package org.eltex.softwlc.stacollector.config;
 
-import com.example.demo.wshandler.WsHandler;
+import org.eltex.softwlc.stacollector.wshandler.WsHandler;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
